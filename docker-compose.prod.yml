@@ -37,6 +37,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hc-api.rule=Host(`ffq9esa4ahq8cc84ynyi9ku7-api.tqdm.online`)
+      - traefik.http.routers.hc-api.entrypoints=http,https
+      - traefik.http.routers.hc-api.tls.certresolver=letsencrypt
+      - traefik.http.services.hc-api.loadbalancer.server.port=3003
 
   pos:
     image: ghcr.io/net4troll/hercosmetic-pos:latest
@@ -46,6 +52,12 @@ services:
       API_URL: http://api:3003
     depends_on:
       - api
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hc-pos.rule=Host(`ffq9esa4ahq8cc84ynyi9ku7-pos.tqdm.online`)
+      - traefik.http.routers.hc-pos.entrypoints=http,https
+      - traefik.http.routers.hc-pos.tls.certresolver=letsencrypt
+      - traefik.http.services.hc-pos.loadbalancer.server.port=3000
 
   admin:
     image: ghcr.io/net4troll/hercosmetic-admin:latest
@@ -55,6 +67,12 @@ services:
       API_URL: http://api:3003
     depends_on:
       - api
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hc-admin.rule=Host(`ffq9esa4ahq8cc84ynyi9ku7-admin.tqdm.online`)
+      - traefik.http.routers.hc-admin.entrypoints=http,https
+      - traefik.http.routers.hc-admin.tls.certresolver=letsencrypt
+      - traefik.http.services.hc-admin.loadbalancer.server.port=3001
 
   store:
     image: ghcr.io/net4troll/hercosmetic-store:latest
@@ -66,6 +84,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hc-store.rule=Host(`ffq9esa4ahq8cc84ynyi9ku7.tqdm.online`)
+      - traefik.http.routers.hc-store.entrypoints=http,https
+      - traefik.http.routers.hc-store.tls.certresolver=letsencrypt
+      - traefik.http.services.hc-store.loadbalancer.server.port=3002
 
 volumes:
   pgdata:
