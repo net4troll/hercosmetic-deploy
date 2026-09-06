@@ -1,0 +1,80 @@
+# Stack de PRODUCTION — images publiées sur GHCR, aucun build sur le serveur.
+# Les images sont construites et poussées depuis la machine de dev :
+#   docker compose build api pos admin store migrate
+#   docker compose push api pos admin store migrate
+# (après `docker login ghcr.io -u net4troll`)
+
+# Coolify : New Resource → Docker Compose → ce fichier.
+# Le service migrate s'exécute à CHAQUE déploiement : il applique les
+# migrations Prisma en attente (idempotent — `migrate deploy` est sûr),
+# puis le conteneur s'arrête (`restart: "no"`).
+
+name: hercosmetic
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hercosmetic}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?définissez POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-hercosmetic}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hercosmetic} -d ${POSTGRES_DB:-hercosmetic}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # One-shot : migrations Prisma appliquées à chaque déploiement.
+  migrate:
+    image: ghcr.io/net4troll/hercosmetic-migrate:latest
+    restart: "no"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-hercosmetic}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hercosmetic}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    image: ghcr.io/net4troll/hercosmetic-api:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-hercosmetic}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hercosmetic}
+      PORT: 3003
+    volumes:
+      - product-images:/app/apps/api/data/product-images
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  pos:
+    image: ghcr.io/net4troll/hercosmetic-pos:latest
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+    depends_on:
+      - api
+
+  admin:
+    image: ghcr.io/net4troll/hercosmetic-admin:latest
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+    depends_on:
+      - api
+
+  store:
+    image: ghcr.io/net4troll/hercosmetic-store:latest
+    restart: unless-stopped
+    environment:
+      PORT: 3002
+      DATABASE_URL: postgres://${POSTGRES_USER:-hercosmetic}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-hercosmetic}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  product-images:
