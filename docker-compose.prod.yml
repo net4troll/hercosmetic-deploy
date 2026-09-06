@@ -39,10 +39,9 @@ services:
         condition: service_healthy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.hc-api.rule=Host(`2lzukamoc3t7o6vi9wtorawr.tqdm.online`) && PathPrefix(`/api`)
+      - traefik.http.routers.hc-api.rule=Host(`api.tqdm.online`)
       - traefik.http.routers.hc-api.entrypoints=http,https
       - traefik.http.routers.hc-api.tls.certresolver=letsencrypt
-      - traefik.http.routers.hc-api.priority=30
       - traefik.http.services.hc-api.loadbalancer.server.port=3003
 
   pos:
@@ -55,10 +54,9 @@ services:
       - api
     labels:
       - traefik.enable=true
-      - traefik.http.routers.hc-pos.rule=Host(`2lzukamoc3t7o6vi9wtorawr.tqdm.online`) && (PathPrefix(`/pos`) || Path(`/login`) || Path(`/settings`) || Path(`/stock`) || Path(`/orders`))
+      - traefik.http.routers.hc-pos.rule=Host(`pos.tqdm.online`)
       - traefik.http.routers.hc-pos.entrypoints=http,https
       - traefik.http.routers.hc-pos.tls.certresolver=letsencrypt
-      - traefik.http.routers.hc-pos.priority=20
       - traefik.http.services.hc-pos.loadbalancer.server.port=3000
 
   admin:
@@ -71,10 +69,9 @@ services:
       - api
     labels:
       - traefik.enable=true
-      - traefik.http.routers.hc-admin.rule=Host(`2lzukamoc3t7o6vi9wtorawr.tqdm.online`) && PathPrefix(`/admin`)
+      - traefik.http.routers.hc-admin.rule=Host(`admin.tqdm.online`)
       - traefik.http.routers.hc-admin.entrypoints=http,https
       - traefik.http.routers.hc-admin.tls.certresolver=letsencrypt
-      - traefik.http.routers.hc-admin.priority=20
       - traefik.http.services.hc-admin.loadbalancer.server.port=3001
 
   store:
@@ -89,10 +86,9 @@ services:
         condition: service_healthy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.hc-store.rule=Host(`2lzukamoc3t7o6vi9wtorawr.tqdm.online`)
+      - traefik.http.routers.hc-store.rule=Host(`boutique.tqdm.online`)
       - traefik.http.routers.hc-store.entrypoints=http,https
       - traefik.http.routers.hc-store.tls.certresolver=letsencrypt
-      - traefik.http.routers.hc-store.priority=10
       - traefik.http.services.hc-store.loadbalancer.server.port=3002
 
 volumes:
