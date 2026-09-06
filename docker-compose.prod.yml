@@ -39,7 +39,7 @@ services:
         condition: service_healthy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.hc-api.rule=Host(`ffq9esa4ahq8cc84ynyi9ku7.tqdm.online`) && PathPrefix(`/api`)
+      - traefik.http.routers.hc-api.rule=Host(`2lzukamoc3t7o6vi9wtorawr.tqdm.online`) && PathPrefix(`/api`)
       - traefik.http.routers.hc-api.entrypoints=http,https
       - traefik.http.routers.hc-api.tls.certresolver=letsencrypt
       - traefik.http.routers.hc-api.priority=30
@@ -55,7 +55,7 @@ services:
       - api
     labels:
       - traefik.enable=true
-      - traefik.http.routers.hc-pos.rule=Host(`ffq9esa4ahq8cc84ynyi9ku7.tqdm.online`) && (PathPrefix(`/pos`) || Path(`/login`) || Path(`/settings`) || Path(`/stock`) || Path(`/orders`))
+      - traefik.http.routers.hc-pos.rule=Host(`2lzukamoc3t7o6vi9wtorawr.tqdm.online`) && (PathPrefix(`/pos`) || Path(`/login`) || Path(`/settings`) || Path(`/stock`) || Path(`/orders`))
       - traefik.http.routers.hc-pos.entrypoints=http,https
       - traefik.http.routers.hc-pos.tls.certresolver=letsencrypt
       - traefik.http.routers.hc-pos.priority=20
@@ -71,7 +71,7 @@ services:
       - api
     labels:
       - traefik.enable=true
-      - traefik.http.routers.hc-admin.rule=Host(`ffq9esa4ahq8cc84ynyi9ku7.tqdm.online`) && PathPrefix(`/admin`)
+      - traefik.http.routers.hc-admin.rule=Host(`2lzukamoc3t7o6vi9wtorawr.tqdm.online`) && PathPrefix(`/admin`)
       - traefik.http.routers.hc-admin.entrypoints=http,https
       - traefik.http.routers.hc-admin.tls.certresolver=letsencrypt
       - traefik.http.routers.hc-admin.priority=20
@@ -89,7 +89,7 @@ services:
         condition: service_healthy
     labels:
       - traefik.enable=true
-      - traefik.http.routers.hc-store.rule=Host(`ffq9esa4ahq8cc84ynyi9ku7.tqdm.online`)
+      - traefik.http.routers.hc-store.rule=Host(`2lzukamoc3t7o6vi9wtorawr.tqdm.online`)
       - traefik.http.routers.hc-store.entrypoints=http,https
       - traefik.http.routers.hc-store.tls.certresolver=letsencrypt
       - traefik.http.routers.hc-store.priority=10
