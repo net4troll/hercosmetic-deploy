@@ -26,6 +26,25 @@ services:
       postgres:
         condition: service_healthy
 
+  # One-shot : import de la sauvegarde POS v1 (produits, commandes, photos)
+  # vers Postgres + volume product-images, puis auto-suppression du seed.
+  # No-op ensuite (base deja importee). Retirer ce service et le dossier
+  # packages/db/seed du depot hercosmeticv2 une fois la migration confirmee.
+  seed:
+    image: ghcr.io/net4troll/hercosmetic-v2-migrate:latest
+    restart: "no"
+    environment:
+      DATABASE_URL: postgres://hercosmetic:hercosmetic@postgres:5432/hercosmetic
+      PRODUCT_IMAGES_DIR: /seed-images
+      POS_BACKUP_AUTORUN: "1"
+    volumes:
+      - product-images:/seed-images
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+
   api:
     image: ghcr.io/net4troll/hercosmetic-v2-api:latest
     restart: unless-stopped
